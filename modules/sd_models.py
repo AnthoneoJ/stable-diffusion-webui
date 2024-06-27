@@ -686,6 +686,18 @@ def send_model_to_trash(m):
     devices.torch_gc()
 
 
+def unload_model():
+    unload_model_weights()
+
+    if model_data.sd_model:
+        send_model_to_trash(model_data.sd_model)
+        model_data.sd_model = None
+        devices.torch_gc()
+
+    import gc
+    gc.collect()
+
+
 def load_model(checkpoint_info=None, already_loaded_state_dict=None):
     from modules import sd_hijack
     checkpoint_info = checkpoint_info or select_checkpoint()

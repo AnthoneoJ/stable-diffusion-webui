@@ -241,6 +241,8 @@ class Api:
         self.add_api_route("/sdapi/v1/memory", self.get_memory, methods=["GET"], response_model=models.MemoryResponse)
         self.add_api_route("/sdapi/v1/unload-checkpoint", self.unloadapi, methods=["POST"])
         self.add_api_route("/sdapi/v1/reload-checkpoint", self.reloadapi, methods=["POST"])
+        self.add_api_route("/sdapi/v1/unload-model", self.unloadmodel, methods=["POST"])
+        self.add_api_route("/sdapi/v1/load-model", self.loadmodel, methods=["POST"])
         self.add_api_route("/sdapi/v1/scripts", self.get_scripts_list, methods=["GET"], response_model=models.ScriptsList)
         self.add_api_route("/sdapi/v1/script-info", self.get_script_info, methods=["GET"], response_model=list[models.ScriptInfo])
         self.add_api_route("/sdapi/v1/extensions", self.get_extensions_list, methods=["GET"], response_model=list[models.ExtensionItem])
@@ -650,6 +652,16 @@ class Api:
 
     def reloadapi(self):
         sd_models.send_model_to_device(shared.sd_model)
+
+        return {}
+    
+    def unloadmodel(self):
+        sd_models.unload_model()
+
+        return {}
+    
+    def loadmodel(self):
+        sd_models.load_model()
 
         return {}
 
