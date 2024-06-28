@@ -857,6 +857,8 @@ def reload_model_weights(sd_model=None, info=None, forced_reload=False):
     timer = Timer()
 
     if not sd_model:
+        if model_data.sd_model is None:
+            load_model()
         sd_model = model_data.sd_model
 
     if sd_model is None:  # previous model load failed
