@@ -243,6 +243,7 @@ class Api:
         self.add_api_route("/sdapi/v1/reload-checkpoint", self.reloadapi, methods=["POST"])
         self.add_api_route("/sdapi/v1/unload-model", self.unloadmodel, methods=["POST"])
         self.add_api_route("/sdapi/v1/load-model", self.loadmodel, methods=["POST"])
+        self.add_api_route("/sdapi/v1/model-status", self.get_model_status, methods=["POST"])
         self.add_api_route("/sdapi/v1/scripts", self.get_scripts_list, methods=["GET"], response_model=models.ScriptsList)
         self.add_api_route("/sdapi/v1/script-info", self.get_script_info, methods=["GET"], response_model=list[models.ScriptInfo])
         self.add_api_route("/sdapi/v1/extensions", self.get_extensions_list, methods=["GET"], response_model=list[models.ExtensionItem])
@@ -656,14 +657,33 @@ class Api:
         return {}
     
     def unloadmodel(self):
-        sd_models.unload_model()
+        try:
+            sd_models.unload_model()
+            result = "SUCCESS"
+        except:
+            import traceback
+            result = traceback.format_exc()
 
-        return {}
+        return {"message": result}
     
     def loadmodel(self):
-        sd_models.load_model()
+        try:
+            sd_models.load_model()
+            result = "SUCCESS"
+        except:
+            import traceback
+            result = traceback.format_exc()
 
-        return {}
+        return {"message": result}
+    
+    def get_model_status(self):
+        status = "unknown"
+        if sd_models.model_data.sd_model is None:
+            status = "unloaded"
+        else:
+            status = "loaded"
+        
+        return {"status": status}
 
     def skip(self):
         shared.state.skip()
